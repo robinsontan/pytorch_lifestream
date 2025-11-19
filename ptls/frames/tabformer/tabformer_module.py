@@ -181,7 +181,7 @@ class TabformerPretrainModule(pl.LightningModule):
         z_trx = self.trx_encoder(batch)  # PB: B, T, H
         
         payload = z_trx.payload.view(z_trx.payload.shape[:-1] + (-1, self.feature_emb_dim))
-        payload[MASK_token_mask] = self.token_mask
+        payload[MASK_token_mask] = self.token_mask.expand_as(payload)[MASK_token_mask]
         payload[RANDOM_token_mask] = random_words[RANDOM_token_mask]
         payload = self.feature_encoder(payload)
 
@@ -197,7 +197,7 @@ class TabformerPretrainModule(pl.LightningModule):
         z_trx = self.trx_encoder(batch)  # PB: B, T, H
 
         payload = z_trx.payload.view(z_trx.payload.shape[:-1] + (-1, self.feature_emb_dim))
-        payload[MASK_token_mask] = self.token_mask
+        payload[MASK_token_mask] = self.token_mask.expand_as(payload)[MASK_token_mask]
         payload[RANDOM_token_mask] = random_words[RANDOM_token_mask]
         payload = self.feature_encoder(payload)
 
